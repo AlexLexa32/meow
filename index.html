@@ -3,18 +3,443 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Молитва вдвоём</title>
+    <title>Молитва Алексея и Александры</title>
     <meta
       name="description"
-      content="Сайт для совместной молитвы Алексея и Александры с ежедневными тропарями дня."
+      content="Самодостаточная страница для совместной молитвы Алексея и Александры с 30 Иисусовыми молитвами и ежедневной ссылкой на тропари дня."
     >
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    >
-    <link rel="stylesheet" href="/styles.css">
+    <style>
+      :root {
+        --bg: #f5ecdd;
+        --bg-strong: #eadac0;
+        --surface: rgba(252, 248, 239, 0.92);
+        --surface-strong: rgba(255, 250, 242, 0.98);
+        --surface-shadow: rgba(79, 40, 10, 0.14);
+        --ink: #2f2018;
+        --muted: #6f5b4f;
+        --accent: #914b24;
+        --line: rgba(107, 70, 36, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top, rgba(255, 238, 202, 0.85), transparent 28%),
+          radial-gradient(circle at 20% 10%, rgba(181, 118, 66, 0.12), transparent 22%),
+          linear-gradient(180deg, #f8efe1 0%, #f2e6d4 45%, #ebdcc4 100%);
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.12), transparent 18%, transparent 82%, rgba(255, 255, 255, 0.08)),
+          repeating-linear-gradient(
+            135deg,
+            rgba(140, 89, 53, 0.025) 0,
+            rgba(140, 89, 53, 0.025) 2px,
+            transparent 2px,
+            transparent 16px
+          );
+      }
+
+      .ambient {
+        position: fixed;
+        width: 24rem;
+        height: 24rem;
+        border-radius: 999px;
+        filter: blur(24px);
+        opacity: 0.55;
+        pointer-events: none;
+      }
+
+      .ambient-left {
+        top: -8rem;
+        left: -8rem;
+        background: radial-gradient(circle, rgba(255, 220, 137, 0.42), transparent 68%);
+      }
+
+      .ambient-right {
+        right: -10rem;
+        bottom: -9rem;
+        background: radial-gradient(circle, rgba(163, 95, 55, 0.28), transparent 65%);
+      }
+
+      .page-shell {
+        width: min(1120px, calc(100% - 2rem));
+        margin: 0 auto;
+        padding: 2rem 0 3rem;
+        position: relative;
+      }
+
+      .card {
+        position: relative;
+        background: var(--surface);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 28px;
+        box-shadow:
+          0 24px 80px var(--surface-shadow),
+          inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(18px);
+      }
+
+      .hero,
+      .prayer-card,
+      .jesus-prayers-card,
+      .daily-card {
+        padding: 1.6rem;
+      }
+
+      .hero {
+        padding: 2.2rem;
+        overflow: hidden;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        right: -2rem;
+        top: -2rem;
+        width: 13rem;
+        height: 13rem;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(240, 204, 131, 0.42), transparent 70%);
+      }
+
+      .eyebrow,
+      .section-kicker,
+      .meta-label {
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-size: 0.78rem;
+        color: var(--accent);
+      }
+
+      .hero-grid,
+      .content-grid {
+        display: grid;
+        gap: 1.35rem;
+      }
+
+      .hero-grid {
+        grid-template-columns: minmax(0, 1.8fr) minmax(280px, 0.95fr);
+        align-items: start;
+      }
+
+      .content-grid {
+        grid-template-columns: minmax(0, 1.15fr) minmax(320px, 1fr);
+        margin-top: 1.35rem;
+      }
+
+      .prayer-column {
+        display: grid;
+        gap: 1.35rem;
+      }
+
+      .daily-card {
+        position: sticky;
+        top: 1rem;
+        height: fit-content;
+      }
+
+      h1,
+      h2 {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        line-height: 0.95;
+        font-weight: 600;
+      }
+
+      h1 {
+        font-size: clamp(3rem, 8vw, 5.2rem);
+        max-width: 12ch;
+      }
+
+      h2 {
+        font-size: clamp(2rem, 5vw, 2.9rem);
+      }
+
+      .hero-copy,
+      .meta-chip strong,
+      .daily-note,
+      .source-note,
+      .helper-message,
+      .jesus-prayers-note,
+      .page-footer {
+        color: var(--muted);
+      }
+
+      .hero-copy {
+        max-width: 56ch;
+        margin: 1.05rem 0 0;
+        font-size: 1.05rem;
+        line-height: 1.8;
+      }
+
+      .hero-meta {
+        display: grid;
+        gap: 0.85rem;
+      }
+
+      .meta-chip {
+        padding: 1rem 1.1rem;
+        border-radius: 18px;
+        background: rgba(255, 250, 242, 0.64);
+        border: 1px solid rgba(132, 91, 64, 0.14);
+      }
+
+      .meta-chip strong {
+        display: block;
+        margin-top: 0.35rem;
+        font-size: 1rem;
+      }
+
+      .card-heading {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.4rem;
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.7rem;
+        flex-wrap: wrap;
+      }
+
+      .ghost-button {
+        border: 1px solid rgba(127, 80, 40, 0.22);
+        background: rgba(255, 255, 255, 0.5);
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 0.78rem 1rem;
+        text-decoration: none;
+        font: inherit;
+        font-size: 0.94rem;
+        cursor: pointer;
+        transition:
+          transform 160ms ease,
+          background-color 160ms ease,
+          border-color 160ms ease;
+      }
+
+      .ghost-button:hover {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.82);
+        border-color: rgba(127, 80, 40, 0.35);
+      }
+
+      .prayer-flow {
+        display: grid;
+        gap: 1rem;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(1.42rem, 2vw, 1.76rem);
+        line-height: 1.6;
+      }
+
+      .prayer-flow p,
+      .jesus-prayers-text,
+      .daily-note,
+      .source-note,
+      .helper-message,
+      .jesus-prayers-note {
+        margin: 0;
+      }
+
+      .jesus-prayers-note {
+        margin-bottom: 1rem;
+        line-height: 1.7;
+      }
+
+      .jesus-prayers-list {
+        display: grid;
+        gap: 0.9rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .jesus-prayers-item {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.95rem;
+        align-items: start;
+        padding: 1rem;
+        border-radius: 18px;
+        background: rgba(255, 251, 245, 0.72);
+        border: 1px solid rgba(145, 75, 36, 0.09);
+      }
+
+      .jesus-prayers-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.2rem;
+        min-width: 2.2rem;
+        height: 2.2rem;
+        border-radius: 999px;
+        background: rgba(145, 75, 36, 0.1);
+        color: var(--accent);
+        font-size: 0.92rem;
+        font-weight: 700;
+      }
+
+      .jesus-prayers-text {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.45rem;
+        line-height: 1.65;
+      }
+
+      .daily-note {
+        margin: -0.3rem 0 1rem;
+        font-size: 0.95rem;
+      }
+
+      .helper-tip,
+      .frame-shell {
+        padding: 1rem;
+        border-radius: 18px;
+        background: rgba(255, 251, 245, 0.72);
+        border: 1px solid rgba(145, 75, 36, 0.09);
+      }
+
+      .helper-tip {
+        margin-bottom: 1rem;
+        line-height: 1.7;
+      }
+
+      .frame-shell {
+        overflow: hidden;
+      }
+
+      .troparion-frame {
+        display: block;
+        width: 100%;
+        min-height: 1200px;
+        border: 0;
+        border-radius: 16px;
+        background: white;
+      }
+
+      .source-note {
+        margin-top: 1rem;
+        font-size: 0.92rem;
+        line-height: 1.6;
+      }
+
+      .source-note a {
+        color: var(--accent);
+      }
+
+      .page-footer {
+        width: min(1120px, calc(100% - 2rem));
+        margin: 0 auto;
+        padding: 0 0 2.25rem;
+        text-align: center;
+      }
+
+      .page-footer p {
+        margin: 0.35rem 0;
+      }
+
+      .reveal {
+        animation: rise-in 720ms ease both;
+      }
+
+      .reveal:nth-of-type(2) {
+        animation-delay: 80ms;
+      }
+
+      .reveal:nth-of-type(3) {
+        animation-delay: 140ms;
+      }
+
+      @keyframes rise-in {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 960px) {
+        .hero-grid,
+        .content-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .daily-card {
+          position: static;
+        }
+
+        .troparion-frame {
+          min-height: 980px;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .page-shell {
+          width: min(100% - 1rem, 1120px);
+          padding-top: 1rem;
+        }
+
+        .hero,
+        .prayer-card,
+        .jesus-prayers-card,
+        .daily-card {
+          padding: 1.2rem;
+        }
+
+        .card-heading {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .actions {
+          width: 100%;
+        }
+
+        .ghost-button {
+          width: 100%;
+          text-align: center;
+        }
+
+        h1 {
+          max-width: none;
+        }
+
+        .prayer-flow {
+          font-size: 1.34rem;
+        }
+
+        .jesus-prayers-text {
+          font-size: 1.25rem;
+        }
+
+        .troparion-frame {
+          min-height: 820px;
+        }
+      }
+    </style>
   </head>
   <body>
     <div class="ambient ambient-left" aria-hidden="true"></div>
@@ -27,8 +452,9 @@
           <div>
             <h1>Молитва Алексея и Александры</h1>
             <p class="hero-copy">
-              Тихое пространство, где можно вместе читать основную молитву и каждый день
-              видеть тропари дня по московскому времени.
+              Самодостаточная страница, которую можно открыть одним файлом. Основной
+              молитвенный текст и 30 Иисусовых молитв работают без сервера, а раздел с
+              тропарями дня подгружается напрямую с Азбуки веры.
             </p>
           </div>
 
@@ -38,8 +464,8 @@
               <strong id="current-date">...</strong>
             </div>
             <div class="meta-chip">
-              <span class="meta-label">Обновление</span>
-              <strong>Ежедневно, <span id="timezone-name">Europe/Moscow</span></strong>
+              <span class="meta-label">Режим</span>
+              <strong>Один файл `index.html`</strong>
             </div>
           </div>
         </div>
@@ -54,9 +480,9 @@
                 <h2>Главная молитва</h2>
               </div>
 
-              <button class="ghost-button" id="copy-prayer" type="button">
-                Скопировать всё
-              </button>
+              <div class="actions">
+                <button class="ghost-button" id="copy-all" type="button">Скопировать всё</button>
+              </div>
             </div>
 
             <div class="prayer-flow" id="main-prayer">
@@ -85,13 +511,11 @@
             </div>
 
             <p class="jesus-prayers-note">
-              Здесь каждая строка уже собрана целиком: имя святого подставлено в слова
+              Каждая строка уже собрана целиком: имя святого подставлено в слова
               «Господи, Иисусе Христе Сыне Божий, молитв ради...»
             </p>
 
-            <ol class="jesus-prayers-list" id="jesus-prayers-list">
-              <li class="helper-message">Собираю 30 молитв...</li>
-            </ol>
+            <ol class="jesus-prayers-list" id="jesus-prayers-list"></ol>
           </section>
         </div>
 
@@ -102,17 +526,32 @@
               <h2>Тропари дня</h2>
             </div>
 
-            <button class="ghost-button" id="refresh-troparion" type="button">
-              Обновить
-            </button>
+            <div class="actions">
+              <a class="ghost-button" id="open-troparion" href="#" target="_blank" rel="noreferrer">
+                Открыть отдельно
+              </a>
+            </div>
           </div>
 
           <p class="daily-note" id="troparion-status">
-            Загружаю календарный текст...
+            Открывается раздел «Тропари» на текущую дату по московскому времени.
           </p>
 
-          <div class="daily-panel" id="troparion-content">
-            <p class="helper-message">Сейчас здесь появятся тропари на выбранный день из календаря Азбуки веры.</p>
+          <div class="helper-tip">
+            <p class="helper-message">
+              Этот блок работает даже при простом открытии файла `index.html`, потому что
+              тропари показываются через встроенную страницу Азбуки веры, а не через локальный сервер.
+            </p>
+          </div>
+
+          <div class="frame-shell">
+            <iframe
+              class="troparion-frame"
+              id="troparion-frame"
+              title="Тропари дня из Азбуки веры"
+              loading="lazy"
+              referrerpolicy="no-referrer"
+            ></iframe>
           </div>
 
           <p class="source-note">
@@ -126,10 +565,154 @@
     </main>
 
     <footer class="page-footer">
-      <p>Да будет это место тихим напоминанием о совместной молитве и собранности перед Богом.</p>
+      <p>Один файл можно перенести на любой компьютер и просто открыть в браузере.</p>
       <p>&copy; <span id="current-year"></span> Молитва вдвоём</p>
     </footer>
 
-    <script src="/app.js" type="module"></script>
+    <script>
+      const MOSCOW_TIMEZONE = "Europe/Moscow";
+      const SAINT_INVOCATIONS = [
+        "Пресвятой Царицы нашей и Матери Твоей Девы Марии",
+        "Святого Иоанна Крестителя Твоего",
+        "Святых Иакима и Анны",
+        "Преподобного отца нашего Алексея",
+        "Святой царицы и страстотерпецы Александры Романовой",
+        "Святителя и отца нашего Алексия, митрополита Московского",
+        "Святой царицы и мученицы Александры Римской",
+        "Святых апостолов Твоих",
+        "Святых жен-мироносиц",
+        "Преподобных отцов наших Сергия, Гавриила, Серафима и Паисия",
+        "Святых блаженных Матроны и Ксении",
+        "Святого мученика Философа",
+        "Святых равноапостольных Нины и Томары, Владимира и Ольги, Мефодия и Кирилла, Николая Японского",
+        "Святых новомучеников и исповедников Церкви нашей",
+        "Святителей Николая Мирликийского и Спиридона Тримифунтского",
+        "Святых равноапостольных Константина и Елены",
+        "Святого мученика и победоносца Георгия",
+        "Святых преподобного Василия, епископа Парийского, и святой великомученицы Варвары",
+        "Святого Иосифа Обручника",
+        "Святой преподобной матери нашей Марии Египетской",
+        "Адама и Евы",
+        "Святых патриархов Авраама, Исаака и Иакова, святых пророков Моисея, Исаии, Илии, Даниила, царя Давида и прочих ветхозаветных святых",
+        "Святых Августина и Патрикия",
+        "Всех святых земли Российской и Грузинской",
+        "Святых благоверных князя Петра и княгини Февронии",
+        "Святых небесных сил бесплотных: ангелов хранителей наших, архангелов Гавриила и Михаила и прочих ангелов",
+        "Святителей Иоанна Златоустого, Василия Великого и Григория Двоеслова",
+        "Святых преподобных жен Дивеевских и старцев Оптинских",
+        "Святого царя и страстотерпца Николая и детей его",
+        "Всех святых Твоих"
+      ];
+
+      const currentDateElement = document.querySelector("#current-date");
+      const currentYearElement = document.querySelector("#current-year");
+      const jesusPrayersListElement = document.querySelector("#jesus-prayers-list");
+      const copyAllButton = document.querySelector("#copy-all");
+      const prayerSuiteElement = document.querySelector("#prayer-suite");
+      const troparionFrameElement = document.querySelector("#troparion-frame");
+      const openTroparionElement = document.querySelector("#open-troparion");
+      const sourceLinkElement = document.querySelector("#source-link");
+
+      currentYearElement.textContent = String(new Date().getFullYear());
+
+      renderJesusPrayers();
+      setupCurrentDateAndTroparion();
+      copyAllButton.addEventListener("click", () => {
+        void copyTextFromElement(copyAllButton, prayerSuiteElement, "Скопировано всё");
+      });
+
+      function getDateStringForTimezone(timeZone) {
+        const formatter = new Intl.DateTimeFormat("en-CA", {
+          timeZone,
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit"
+        });
+
+        const parts = formatter.formatToParts(new Date());
+        const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+        return `${values.year}-${values.month}-${values.day}`;
+      }
+
+      function formatRussianDate(dateString) {
+        const [year, month, day] = dateString.split("-").map(Number);
+        const date = new Date(Date.UTC(year, month - 1, day));
+
+        return new Intl.DateTimeFormat("ru-RU", {
+          timeZone: "UTC",
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        }).format(date);
+      }
+
+      function setupCurrentDateAndTroparion() {
+        const dateString = getDateStringForTimezone(MOSCOW_TIMEZONE);
+        const troparionUrl = `https://azbyka.ru/days/${dateString}#tropari`;
+
+        currentDateElement.textContent = formatRussianDate(dateString);
+        troparionFrameElement.src = troparionUrl;
+        openTroparionElement.href = troparionUrl;
+        sourceLinkElement.href = troparionUrl;
+      }
+
+      function renderJesusPrayers() {
+        jesusPrayersListElement.innerHTML = SAINT_INVOCATIONS.map((invocation, index) => {
+          return `
+            <li class="jesus-prayers-item">
+              <span class="jesus-prayers-number">${index + 1}</span>
+              <p class="jesus-prayers-text">Господи, Иисусе Христе Сыне Божий, молитв ради ${escapeHtml(invocation)}, помилуй нас!</p>
+            </li>
+          `;
+        }).join("");
+      }
+
+      function escapeHtml(value) {
+        return value
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      async function copyTextFromElement(button, element, successText) {
+        if (!element) {
+          return;
+        }
+
+        const previousLabel = button.textContent;
+        const textToCopy = element.innerText.replace(/\n{3,}/g, "\n\n").trim();
+
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(textToCopy);
+          } else {
+            fallbackCopyText(textToCopy);
+          }
+
+          button.textContent = successText;
+        } catch (error) {
+          button.textContent = "Не удалось скопировать";
+        }
+
+        window.setTimeout(() => {
+          button.textContent = previousLabel;
+        }, 1800);
+      }
+
+      function fallbackCopyText(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.setAttribute("readonly", "");
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      }
+    </script>
   </body>
 </html>
