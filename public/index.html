@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Молитва вдвоём</title>
+    <meta
+      name="description"
+      content="Сайт для совместной молитвы Алексея и Александры с ежедневными тропарями дня."
+    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <div class="ambient ambient-left" aria-hidden="true"></div>
+    <div class="ambient ambient-right" aria-hidden="true"></div>
+
+    <main class="page-shell">
+      <section class="hero card reveal">
+        <p class="eyebrow">Совместная молитва</p>
+        <div class="hero-grid">
+          <div>
+            <h1>Молитва Алексея и Александры</h1>
+            <p class="hero-copy">
+              Тихое пространство, где можно вместе читать основную молитву и каждый день
+              видеть тропари дня по московскому времени.
+            </p>
+          </div>
+
+          <div class="hero-meta">
+            <div class="meta-chip">
+              <span class="meta-label">Сегодня</span>
+              <strong id="current-date">...</strong>
+            </div>
+            <div class="meta-chip">
+              <span class="meta-label">Обновление</span>
+              <strong>Ежедневно, <span id="timezone-name">Europe/Moscow</span></strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <div class="prayer-column reveal" id="prayer-suite">
+          <article class="card prayer-card">
+            <div class="card-heading">
+              <div>
+                <p class="section-kicker">Основной текст</p>
+                <h2>Главная молитва</h2>
+              </div>
+
+              <button class="ghost-button" id="copy-prayer" type="button">
+                Скопировать всё
+              </button>
+            </div>
+
+            <div class="prayer-flow" id="main-prayer">
+              <p>
+                Молим Тя, Человеколюбче Иисусе, сказавый: «Истинно также говорю вам, что если
+                двое из вас согласятся на земле просить о всяком деле, то, чего бы ни
+                попросили, будет им от Отца Моего Небесного, ибо, где двое или трое собраны
+                во имя Моё, там Я посреди них». Се мы, грешные и смеренные рабы Твои:
+                Алексей и Александра, молим Тя, пощади нас, Господи, очисти согрешения наша,
+                доведи нас до Тебя и Твоего Царства!
+              </p>
+              <p>
+                Так же молим Тя, умножи в нас Любовь Твою, встань посреди нас, надеемся же,
+                что истинно собрались во Имя Твое! Еще молим и о родителях наших: Владимире,
+                Георгие, Татиане и Мариями, помилуй их и всех сродников наших.
+              </p>
+            </div>
+          </article>
+
+          <section class="card jesus-prayers-card">
+            <div class="card-heading">
+              <div>
+                <p class="section-kicker">Молитв ради святых</p>
+                <h2>30 Иисусовых молитв</h2>
+              </div>
+            </div>
+
+            <p class="jesus-prayers-note">
+              Здесь каждая строка уже собрана целиком: имя святого подставлено в слова
+              «Господи, Иисусе Христе Сыне Божий, молитв ради...»
+            </p>
+
+            <ol class="jesus-prayers-list" id="jesus-prayers-list">
+              <li class="helper-message">Собираю 30 молитв...</li>
+            </ol>
+          </section>
+        </div>
+
+        <aside class="card daily-card reveal">
+          <div class="card-heading">
+            <div>
+              <p class="section-kicker">На сегодня</p>
+              <h2>Тропари дня</h2>
+            </div>
+
+            <button class="ghost-button" id="refresh-troparion" type="button">
+              Обновить
+            </button>
+          </div>
+
+          <p class="daily-note" id="troparion-status">
+            Загружаю календарный текст...
+          </p>
+
+          <div class="daily-panel" id="troparion-content">
+            <p class="helper-message">Сейчас здесь появятся тропари на выбранный день из календаря Азбуки веры.</p>
+          </div>
+
+          <p class="source-note">
+            Источник:
+            <a id="source-link" href="https://azbyka.ru/days/" target="_blank" rel="noreferrer">
+              Азбука веры
+            </a>
+          </p>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <p>Да будет это место тихим напоминанием о совместной молитве и собранности перед Богом.</p>
+      <p>&copy; <span id="current-year"></span> Молитва вдвоём</p>
+    </footer>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
